@@ -1,10 +1,23 @@
 <template>
-  <div style="padding: 6px ">
-    <div class="countBox">
-      <p id="myCount" >{{updatecount}}</p>
-    </div>
-    <div id="myButton" class="myButton" @click="controlWorker(btstate)">
-      点击开始计数
+  <div>
+    <!--      选择颜色框-->
+    <p id="test" class="a">4654654</p>
+    <select @change="changeColor()" id="change">
+      <option disabled selected="selected" >请选择颜色</option>
+      <option value="a" >crimson</option>
+      <option value="b" >blue</option>
+      <option value="c" >darkslateblue</option>
+    </select>
+    <br>
+    <!--      输入校验，错误时文字变色-->
+    <input id="txt" type="text" v-on:keyup="txtvaild" placeholder="输入正数" >
+    <div style="padding: 6px ">
+      <div class="countBox">
+        <p id="myCount" >{{updatecount}}</p>
+      </div>
+      <div id="myButton" class="myButton" @click="controlWorker(btstate)">
+        点击开始计数
+      </div>
     </div>
   </div>
 </template>
@@ -37,12 +50,28 @@
             },
             ...mapMutations([
                 'increment',
-            ])
+            ]),
+            changeColor: function(){
+                let sel = document.getElementById("change");
+                let p = document.getElementById("test");
+                p.className = sel.options[sel.selectedIndex].value;
+            },
+            txtvaild: function (e) {
+                let reg = /^\+?\d*$/;
+                let inputval = e.target.value;
+                if(!reg.test(inputval)){
+                    e.target.style.color = "red";
+                }else {
+                    e.target.style.color = this.color;
+                }
+                //console.log(e.target.style.color);
+            },
         },
         data(){
             return{
                 btstate: "stop",
                 count: 0,
+                color(){}
             }
         },
         computed: {
@@ -52,6 +81,11 @@
             ...mapState([
 
             ])
+        },
+        mounted(){
+            //初始获取页面内id为txt的元素的color属性
+            let input = document.getElementById("txt");
+            this.color = window.getComputedStyle(input).color;
         }
     };
     // function sortarr(a,b){
@@ -101,6 +135,26 @@
 </script>
 
 <style scoped>
+  select{
+    height: 24px;
+    line-height: 24px;
+  }
+  option{
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    outline: none;
+    background: transparent;
+    border:none;
+  }
+  .a{
+    color: crimson ;
+  }
+  .b{
+    color: blue ;
+  }
+  .c{
+    color: darkslateblue;
+  }
   .countBox{
     display: inline-block;
     box-sizing: border-box;
